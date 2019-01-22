@@ -3,12 +3,19 @@ import {reduxForm, Field} from 'redux-form';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import * as actions from '../../actions';
+import drivers from "../../reducers/drivers";
+import {getMyself} from "../../actions";
 
 class Signin extends Component {
 
     onSubmit = (formProps) => {
         this.props.signin(formProps, () => {
-            this.props.history.push('/feature');
+            this.props.getMyself(() => {
+                if (this.props.myself.myself.isDriver === 0)
+                    this.props.history.push('/dashboard-preteur');
+                else
+                    this.props.history.push('/feature');
+            });
         });
     };
 
@@ -31,7 +38,7 @@ class Signin extends Component {
                                         <div className="row">
                                             <div className="col mt-4">
                                                 <fieldset>
-                                                    <Field name='email'
+                                                    <Field name='username'
                                                            type='text'
                                                            component='input'
                                                            autoComplete='off'
@@ -75,7 +82,10 @@ class Signin extends Component {
 
 
 function mapStateToProps(state) {
-    return {errorMessage: state.auth.errorMessage}
+    return {
+        errorMessage: state.auth.errorMessage,
+        myself: state.myself
+    }
 }
 
 export default compose(

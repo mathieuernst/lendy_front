@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import * as actions from '../actions';
+import drivers from "../reducers/drivers";
 export default ChildComponent => {
     class ComposedComponent extends Component {
         // Our component just got rendered
@@ -22,5 +24,5 @@ export default ChildComponent => {
     function mapStateToProps(state) {
         return { auth: state.auth.authenticated };
     }
-    return connect(mapStateToProps)(ComposedComponent);
+    return connect(mapStateToProps, actions)(ComposedComponent);
 };

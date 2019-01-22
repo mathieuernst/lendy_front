@@ -9,19 +9,32 @@ class Signup extends Component {
         super(props);
         this.state = {
             type: null
-        }
+        };
     }
     componentDidMount() {
         const myType = this.props.match.params.type;
         var newType = '';
-        myType === 'lenders' ? newType = 'prêteur' : newType = 'chauffeur';
+        myType === 'lenders' ? newType = 'preteur' : newType = 'emprunteur';
         this.setState({type: newType});
     }
 
     onSubmit = (formProps) => {
-        console.log(formProps);
-        this.props.signup(formProps, this.state.type, () => {
-            this.props.history.push('/feature');
+        var isDriver;
+        this.state.type === 'preteur' ? isDriver = 0 : isDriver = 1;
+        formProps = {
+            ...formProps,
+            address: ' ',
+            isDriver: isDriver,
+            type: this.state.type
+        };
+        //console.log(formProps);
+        this.props.signup(formProps, () => {
+            this.props.getMyself(() => {
+                if (this.props.myself.myself.isDriver === 0)
+                    this.props.history.push('/dashboard-preteur');
+                else
+                    this.props.history.push('/feature');
+            });
         });
     };
 
@@ -50,14 +63,17 @@ class Signup extends Component {
                                         </div>
                                     </div>
                                     <form onSubmit={handleSubmit(this.onSubmit)}>
-                                        <div className="form-group col mt-4" style={{paddingLeft : "0"}}>
+                                        <div className="col mt-4" style={{paddingLeft : "0"}}>
+                                            <fieldset>
                                                 <Field
                                                     name='firstName'
                                                     type='text'
-                                                    placeholder="Prenom"
                                                     autoComplete='off'
+                                                    className="form-control"
+                                                    placeholder="Prénom"
                                                     component={this.renderField}
                                                 />
+                                            </fieldset>
                                         </div>
                                         <div className="col mt-4" style={{paddingLeft : "0"}}>
                                             <fieldset>
@@ -74,7 +90,7 @@ class Signup extends Component {
                                         <div className="col mt-4" style={{paddingLeft : "0"}}>
                                             <fieldset>
                                                 <Field
-                                                    name='email'
+                                                    name='username'
                                                     type='text'
                                                     autoComplete='off'
                                                     className="form-control"
@@ -138,13 +154,13 @@ function validate(values){
     }
 
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (!values.email)
+    if (!values.username)
     {
-        errors.email = 'Ajoutez une adresse mail ';
+        errors.username = 'Ajoutez une adresse mail ';
     }
-    if (values.email && !values.email.match(mailformat))
+    if (values.username && !values.username.match(mailformat))
     {
-      errors.email = 'Votre adresse mail n\'est pas valide';
+      errors.username = 'Votre adresse mail n\'est pas valide';
     }
 
     if (!values.password)
@@ -161,7 +177,10 @@ function validate(values){
 }
 
 function mapStateToProps(state) {
-    return {errorMessage: state.auth.errorMessage}
+    return {
+        errorMessage: state.auth.errorMessage,
+        myself: state.myself
+    }
 }
 
 export default compose(

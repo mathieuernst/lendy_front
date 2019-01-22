@@ -1,7 +1,74 @@
-import {AUTH_USER, AUTH_ERROR} from "./types";
+import {AUTH_USER, AUTH_ERROR, GET_DRIVERS, GET_MYSELF} from "./types";
+
 import axios from 'axios';
 const TOKEN = '?access_token=9C9dCYXB222oI2gCmuWq87kMJ5IF3xx9Lw9O9rv2suIuMOI6imVJ30393zL30L4V';
-const BASE_URL = 'http://localhost:3000/api/';
+const BASE_URL = 'http://localhost:27019/api';
+export * from './carApiActions';
+
+export const signup = (formProps, callback) => async dispatch => {
+    try {
+        const response = await axios.post(
+            'http://localhost:27019/api/users/register',
+            formProps
+        );
+
+
+        dispatch({ type: AUTH_USER, payload: response.data.token });
+        localStorage.setItem('token', response.data.token);
+        callback();
+    } catch (e) {
+        dispatch({ type: AUTH_ERROR, payload: 'Email in use' });
+    }
+};
+
+export const signin = (formProps, callback) => async dispatch => {
+    try {
+        const response = await axios.post(
+            'http://localhost:27019/api/users/login',
+            formProps
+        );
+
+        dispatch({ type: AUTH_USER, payload: response.data.token });
+        localStorage.setItem('token', response.data.token);
+        callback();
+    } catch (e) {
+        dispatch({ type: AUTH_ERROR, payload: 'Invalid login credentials' });
+    }
+};
+
+export const getDrivers = (callback) => async dispatch => {
+    let webApiUrl = 'http://localhost:27019/api/users/drivers';
+    let tokenStr = localStorage.getItem('token');
+    try {
+        const response = await axios.get(
+            webApiUrl,
+            {headers: {"Authorization": `Bearer ${tokenStr}`}}
+            );
+        dispatch({ type: GET_DRIVERS, payload: response.data });
+        callback();
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
+};
+
+export const getMyself = (callback) => async dispatch => {
+    let webApiUrl = 'http://localhost:27019/api/users/myself';
+    let tokenStr = localStorage.getItem('token');
+    try {
+        const response = await axios.get(
+            webApiUrl,
+            {headers: {"Authorization": `Bearer ${tokenStr}`}}
+        );
+        dispatch({ type: GET_MYSELF, payload: response.data });
+        callback();
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
+};
 
 
 //export const signup = ({email, password}) => {
@@ -13,7 +80,7 @@ const BASE_URL = 'http://localhost:3000/api/';
 // double fat arrow en cascade == fonction qui return une autre fonction
 
 
-export const signup = (formProps, type, callback) => async dispatch => {
+/*export const signup = (formProps, type, callback) => async dispatch => {
 
     formProps = {
         ...formProps,
@@ -58,7 +125,7 @@ export const signin = (formProps, callback) => async dispatch => {
             payload: 'Invalid login credentials'
         })
     }
-};
+};*/
 
 export const signout = () => {
     localStorage.removeItem('token');

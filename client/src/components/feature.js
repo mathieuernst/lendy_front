@@ -1,17 +1,38 @@
 import React, {Component} from 'react';
 import requireAuth from './requireAuth';
+import {connect} from 'react-redux';
+import GoogleSuggest from './GoogleSuggest'
+
 
 class Feature extends Component{
+    constructor(props){
+        super(props);
+    }
+
+    componentDidMount(){
+        if (this.props.myself.myself === "")
+            this.props.getMyself(() => {});
+    }
+
+    renderName = () => {
+      if(this.props.myself.myself !== "")
+      {
+          let name = this.props.myself.myself.firstName;
+          return name.charAt(0).toUpperCase() + name.slice(1);
+      }
+      else
+          return '';
+    };
+
     render(){
         return (
             <section className="fdb-block">
                 <div className="container">
                     <div className="row text-center">
                         <div className="col-12">
-                            <h1>Bienvenue sur Lendy</h1>
+                            <h1>Bienvenue sur Lendy {this.renderName()}</h1>
                         </div>
                     </div>
-
                     <div className="row text-center justify-content-center mt-5">
                         <div className="col-12 col-sm-4 col-xl-3 m-md-auto">
                             <img  className="fdb-icon" src="/assets/icons/layers.svg" />
@@ -43,4 +64,12 @@ class Feature extends Component{
     }
 }
 
-export default requireAuth(Feature);
+function mapStateToProps(state) {
+    return {
+        drivers: state.drivers,
+        myself: state.myself
+    }
+}
+
+
+export default connect(mapStateToProps)(requireAuth(Feature));
