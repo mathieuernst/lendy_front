@@ -1,17 +1,16 @@
-import {AUTH_USER, AUTH_ERROR, GET_DRIVERS, GET_MYSELF} from "./types";
+import {AUTH_USER, AUTH_ERROR, GET_DRIVERS, GET_MYSELF, GET_LENDERS} from "./types";
 
 import axios from 'axios';
 const TOKEN = '?access_token=9C9dCYXB222oI2gCmuWq87kMJ5IF3xx9Lw9O9rv2suIuMOI6imVJ30393zL30L4V';
-const BASE_URL = 'http://localhost:27019/api';
+const BASE_URL = 'http://localhost:27031/api';
 export * from './carApiActions';
 
 export const signup = (formProps, callback) => async dispatch => {
     try {
         const response = await axios.post(
-            'http://localhost:27019/api/users/register',
+            'http://localhost:27031/api/users/register',
             formProps
         );
-
 
         dispatch({ type: AUTH_USER, payload: response.data.token });
         localStorage.setItem('token', response.data.token);
@@ -24,7 +23,7 @@ export const signup = (formProps, callback) => async dispatch => {
 export const signin = (formProps, callback) => async dispatch => {
     try {
         const response = await axios.post(
-            'http://localhost:27019/api/users/login',
+            'http://localhost:27031/api/users/login',
             formProps
         );
 
@@ -37,7 +36,7 @@ export const signin = (formProps, callback) => async dispatch => {
 };
 
 export const getDrivers = (callback) => async dispatch => {
-    let webApiUrl = 'http://localhost:27019/api/users/drivers';
+    let webApiUrl = 'http://localhost:27031/api/users/drivers';
     let tokenStr = localStorage.getItem('token');
     try {
         const response = await axios.get(
@@ -53,12 +52,65 @@ export const getDrivers = (callback) => async dispatch => {
     }
 };
 
-export const getMyself = (callback) => async dispatch => {
-    let webApiUrl = 'http://localhost:27019/api/users/myself';
+export const getLenders = (callback) => async dispatch => {
+    let webApiUrl = 'http://localhost:27031/api/users/lenders';
     let tokenStr = localStorage.getItem('token');
     try {
         const response = await axios.get(
             webApiUrl,
+            {headers: {"Authorization": `Bearer ${tokenStr}`}}
+        );
+        dispatch({ type: GET_LENDERS, payload: response.data });
+        callback();
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
+};
+
+export const getMyself = (callback) => async dispatch => {
+    let webApiUrl = 'http://localhost:27031/api/users/myself';
+    let tokenStr = localStorage.getItem('token');
+    try {
+        const response = await axios.get(
+            webApiUrl,
+            {headers: {"Authorization": `Bearer ${tokenStr}`}}
+        );
+        dispatch({ type: GET_MYSELF, payload: response.data });
+        callback();
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
+};
+
+export const setCarUser = (values, callback) => async dispatch => {
+    let webApiUrl = 'http://localhost:27031/api/users/update';
+    let tokenStr = localStorage.getItem('token');
+    try {
+        const response = await axios.patch(
+            webApiUrl,
+            values,
+            {headers: {"Authorization": `Bearer ${tokenStr}`}}
+        );
+        dispatch({ type: GET_MYSELF, payload: response.data });
+        callback();
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
+};
+
+export const updateUser = (values, callback) => async dispatch => {
+    let webApiUrl = 'http://localhost:27031/api/users/update';
+    let tokenStr = localStorage.getItem('token');
+    try {
+        const response = await axios.patch(
+            webApiUrl,
+            values,
             {headers: {"Authorization": `Bearer ${tokenStr}`}}
         );
         dispatch({ type: GET_MYSELF, payload: response.data });

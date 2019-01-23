@@ -51,3 +51,18 @@ export const getTrims = (make, model, callback) => async dispatch => {
     }
 };
 
+export const getModel = (model, callback) => async dispatch => {
+    let webApiUrl = 'https://cors-anywhere.herokuapp.com/https://www.carqueryapi.com/api/0.3/?callback=?&cmd=getModel&model='+model;
+    try {
+        const response = await axios.get(
+            webApiUrl
+        );
+        var jsonMakes = JSON.parse(response.data.substr(2).slice(0, -2));
+        dispatch({ type: GET_CAR_MODEL, payload: jsonMakes[0] });
+        callback();
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
+};

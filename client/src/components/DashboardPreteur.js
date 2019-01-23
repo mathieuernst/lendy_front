@@ -24,14 +24,10 @@ class DashboardPreteur extends Component{
         });
         if (this.props.myself.myself === "")
             this.props.getMyself(() => {
-                this.props.getDrivers(() => {
-                    console.log(this.props.drivers);
-                });
+                this.props.getDrivers(() => {});
             });
         else
-            this.props.getDrivers(() => {
-                console.log(this.props.drivers);
-            });
+            this.props.getDrivers(() => {});
     }
 
     getLatLng(lat, lng) {
@@ -67,7 +63,7 @@ class DashboardPreteur extends Component{
 
                                 <div className="content p-3">
                                     <h3><strong>{driver.firstName} {driver.lastName}</strong></h3>
-                                    <p>Founder</p>
+                                    <p>Voiture: {driver.cars}</p>
                                 </div>
                             </div>
                         </div>

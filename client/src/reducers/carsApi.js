@@ -15,9 +15,9 @@ export default function(state = INITIAL_STATE, action){
         case GET_CAR_MODELS:
             return {...state, models: action.payload};
         case GET_CAR_TRIMS:
-            return {...state, trims: action.payload};/*
+            return {...state, trims: action.payload};
         case GET_CAR_MODEL:
-            return {...state, model: action.payload};*/
+            return {...state, model: action.payload};
         default:
             return state
     }

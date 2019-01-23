@@ -7,11 +7,49 @@ import GoogleSuggest from './GoogleSuggest'
 class Feature extends Component{
     constructor(props){
         super(props);
+        this.state = {
+            lat: '',
+            lng: '',
+            errorSearch: ''
+        };
+        this.getLatLng = this.getLatLng.bind(this);
+        this.getSearch = this.getSearch.bind(this);
+        this.renderErrorSearch = this.renderErrorSearch.bind(this);
     }
 
     componentDidMount(){
         if (this.props.myself.myself === "")
-            this.props.getMyself(() => {});
+            this.props.getMyself(() => {
+                if (this.props.myself.myself.isDriver === 0)
+                    this.props.history.push('/dashboard-preteur');
+                this.props.getLenders(() => {});
+            });
+        else {
+            if (this.props.myself.myself.isDriver === 0)
+                this.props.history.push('/dashboard-preteur');
+            this.props.getLenders(() => {});
+        }
+    }
+
+    getLatLng(lat, lng) {
+        this.setState({
+            lat: lat,
+            lng: lng
+        });
+    }
+
+    renderErrorSearch() {
+        this.setState({
+            errorSearch: 'Veuillez selectionner une valeur dans la liste avant de valider votre recherche'
+        });
+    }
+
+    getSearch(){
+        if (this.state.lat === '' || this.state.lng == '')
+            this.renderErrorSearch();
+        else {
+            this.setState({errorSearch: ''});
+        }
     }
 
     renderName = () => {
@@ -24,6 +62,32 @@ class Feature extends Component{
           return '';
     };
 
+    renderLenders = (myLenders) => {
+        if (myLenders.lenders !== "")
+        {
+            return myLenders.lenders.map((lender) => {
+                if (lender._id !== this.props.myself.myself._id) {
+                    return (
+                        <div className="col-sm-3 text-left" key={lender._id}>
+                            <div className="fdb-box p-0">
+                                <img alt="image" className="img-fluid rounded-0" src="/assets/people/6.jpg" />
+
+                                <div className="content p-3">
+                                    <h3><strong>{lender.firstName} {lender.lastName}</strong></h3>
+                                    <p>Voiture: {lender.cars}</p>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+                else
+                    return '';
+            })
+        }
+        else
+            return (<div></div>);
+    };
+
     render(){
         return (
             <section className="fdb-block">
@@ -33,30 +97,20 @@ class Feature extends Component{
                             <h1>Bienvenue sur Lendy {this.renderName()}</h1>
                         </div>
                     </div>
-                    <div className="row text-center justify-content-center mt-5">
-                        <div className="col-12 col-sm-4 col-xl-3 m-md-auto">
-                            <img  className="fdb-icon" src="/assets/icons/layers.svg" />
-                            <h3><strong>Feature 1</strong></h3>
-                            <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
-                        </div>
-
-                        <div className="col-12 col-sm-4 col-xl-3 m-auto pt-4 pt-sm-0">
-                            <img className="fdb-icon" src="/assets/icons/gift.svg" />
-                            <h3><strong>Feature 2</strong></h3>
-                            <p>Separated they live in Bookmarksgrove right at the coast of the Semantics, a large ocean.</p>
-                        </div>
-
-                        <div className="col-12 col-sm-4 col-xl-3 m-auto pt-4 pt-sm-0">
-                            <img className="fdb-icon" src="/assets/icons/cloud.svg" />
-                            <h3><strong>Feature 3</strong></h3>
-                            <p>A small river namezd Duden flows by their place and supplies it with the necessary regelialia</p>
-                        </div>
-
-                        <div className="row mt-5 justify-content-center">
-                            <div className="col-8">
-                                <img alt="image" className="img-fluid" src="/assets/draws/product-tour.svg"/>
+                    <div className="row justify-content-center mt-5">
+                        <div className="col-12 col-sm-8 col-xl-8 ">
+                            <GoogleSuggest callback={this.getLatLng}/>
+                            <div className="text-danger">
+                                {this.state.errorSearch}
                             </div>
                         </div>
+                        <div className="col-12 col-sm-4 col-xl-4 ">
+                            <button className="btn btn-secondary" type="button" onClick={this.getSearch}>Affichez les chauffeurs autour de cette adresse</button>
+                        </div>
+                    </div>
+                    <div className="row-50"></div>
+                    <div className="row">
+                        {this.renderLenders(this.props.lenders)}
                     </div>
                 </div>
             </section>
@@ -66,7 +120,7 @@ class Feature extends Component{
 
 function mapStateToProps(state) {
     return {
-        drivers: state.drivers,
+        lenders: state.lenders,
         myself: state.myself
     }
 }

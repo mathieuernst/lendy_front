@@ -1,6 +1,7 @@
 export const AUTH_USER = 'auth_user';
 export const AUTH_ERROR = 'auth_error';
 export const GET_DRIVERS = 'get_drivers';
+export const GET_LENDERS = 'get_lenders';
 export const GET_MYSELF = 'get_myself';
 
 //Cars API
