@@ -32,6 +32,7 @@ class Feature extends Component{
     }
 
     getLatLng(lat, lng) {
+        console.log(lat, lng);
         this.setState({
             lat: lat,
             lng: lng

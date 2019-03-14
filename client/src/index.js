@@ -17,6 +17,7 @@ import Signout from './components/auth/Signout';
 import Feature from "./components/feature";
 import DashboardPreteur from "./components/DashboardPreteur";
 import UpdateProfile from "./components/UpdateProfile";
+import Profile from "./components/Profile";
 
 
 const store = createStore(reducers, {
@@ -36,6 +37,7 @@ ReactDOM.render(
                 <Route path="/feature" exact component={Feature} />
                 <Route path="/dashboard-preteur" exact component={DashboardPreteur} />
                 <Route path="/update-profile" exact component={UpdateProfile} />
+                <Route path="/profile" exact component={Profile} />
             </App>
         </BrowserRouter>
     </Provider>,

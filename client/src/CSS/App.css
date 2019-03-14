@@ -22,6 +22,26 @@
   padding: 250px 0;
 }
 
+#sb-site, .sb-site-container {
+  /* You may now use class .sb-site-container instead of #sb-site and use your own id. However please make sure you don't set any of the following styles any differently on your id. */
+  width: 100%;
+  min-height: 80vh;
+  position: relative;
+  z-index: 1; /* Site sits above Slidebars */
+  background-color: #f8f8f9;
+  /* Default background colour, overwrite this with your own css. I suggest moving your html or body background styling here. Making this transparent will allow the Slidebars beneath to be visible. */
+}
+
+/* Micro clearfix by Nicolas Gallagher, ensures the site container hits the top and bottom of the screen. */
+#sb-site:before, #sb-site:after, .sb-site-container:before, .sb-site-container:after {
+  content: ' ';
+  display: table;
+}
+
+#sb-site:before, #sb-site:after, .sb-site-container:before, .sb-site-container:after {
+  clear: both;
+}
+
 /*----------------------------------------------------------------------------------------------------------------------
 Project:	    AppStorm
 Version:        1.0.0
@@ -1619,7 +1639,7 @@ select::-ms-expand {
 .select-wrapper:before {
   position: absolute;
   display: inline-block;
-  font-weight: 900;
+  font-weight: 700;
   text-rendering: auto;
   top: 0;
   margin: auto;
@@ -1780,7 +1800,7 @@ D. Plugins Styles
 
 .owl-carousel .owl-nav .owl-prev:after, .owl-carousel .owl-nav .owl-next:after {
   font-family: "Font Awesome\ 5 Free";
-  font-weight: 900;
+  font-weight: 700;
   font-size: 1.375rem;
   line-height: 2.5rem;
   -webkit-font-smoothing: antialiased;
